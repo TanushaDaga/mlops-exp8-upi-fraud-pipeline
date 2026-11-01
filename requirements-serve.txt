@@ -1,0 +1,8 @@
+# Slim runtime dependencies for the Docker / Kubernetes inference image
+pandas==2.3.3
+numpy==2.5.2
+scikit-learn==1.9.0
+catboost==1.2.10
+joblib==1.6.0
+streamlit==1.66.1
+prometheus_client==0.26.0

@@ -1,0 +1,84 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "graphTooltip": 1,
+  "id": null,
+  "title": "UPI Fraud Detection - MLOps Monitoring",
+  "uid": "upi-fraud-mlops",
+  "tags": ["mlops", "prometheus"],
+  "timezone": "browser",
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "time": {"from": "now-15m", "to": "now"},
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Application Status",
+      "gridPos": {"h": 5, "w": 4, "x": 0, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "up{job=\"ml-app\"}", "instant": true, "legendFormat": "ml-app"}],
+      "fieldConfig": {"defaults": {
+        "mappings": [{"type": "value", "options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}}],
+        "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]},
+        "color": {"mode": "thresholds"}}, "overrides": []},
+      "options": {"colorMode": "background", "graphMode": "none", "textMode": "value"}
+    },
+    {
+      "id": 2, "type": "stat", "title": "Total Prediction Requests",
+      "gridPos": {"h": 5, "w": 4, "x": 4, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "sum(ml_prediction_requests_total)", "instant": true}],
+      "fieldConfig": {"defaults": {"color": {"mode": "fixed", "fixedColor": "blue"}}, "overrides": []},
+      "options": {"colorMode": "value", "graphMode": "area"}
+    },
+    {
+      "id": 3, "type": "stat", "title": "Total Errors",
+      "gridPos": {"h": 5, "w": 4, "x": 8, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "sum(ml_prediction_errors_total)", "instant": true}],
+      "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "color": {"mode": "thresholds"}}, "overrides": []},
+      "options": {"colorMode": "value", "graphMode": "none"}
+    },
+    {
+      "id": 4, "type": "piechart", "title": "Total Predictions by Class",
+      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "sum by (predicted_class) (ml_predictions_total)", "instant": true, "legendFormat": "{{predicted_class}}"}],
+      "fieldConfig": {"defaults": {}, "overrides": [
+        {"matcher": {"id": "byName", "options": "Fraud"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "red"}}]},
+        {"matcher": {"id": "byName", "options": "Legitimate"}, "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "green"}}]}]},
+      "options": {"legend": {"displayMode": "list", "placement": "right"}, "pieType": "donut", "displayLabels": ["value"]}
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Request Rate (req/s)",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 5},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {"refId": "A", "expr": "rate(ml_prediction_requests_total[1m])", "legendFormat": "requests/s"},
+        {"refId": "B", "expr": "sum by (predicted_class) (rate(ml_predictions_total[1m]))", "legendFormat": "{{predicted_class}}"}],
+      "fieldConfig": {"defaults": {"unit": "reqps", "custom": {"drawStyle": "line", "fillOpacity": 15, "lineWidth": 2}}, "overrides": []}
+    },
+    {
+      "id": 6, "type": "timeseries", "title": "Prediction Latency (p95 / p99)",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 5},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {"refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(ml_prediction_latency_seconds_bucket[5m])))", "legendFormat": "p95"},
+        {"refId": "B", "expr": "histogram_quantile(0.99, sum by (le) (rate(ml_prediction_latency_seconds_bucket[5m])))", "legendFormat": "p99"}],
+      "fieldConfig": {"defaults": {"unit": "s", "custom": {"drawStyle": "line", "fillOpacity": 10, "lineWidth": 2}}, "overrides": []}
+    },
+    {
+      "id": 7, "type": "timeseries", "title": "Predictions by Class (cumulative)",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 13},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "sum by (predicted_class) (ml_predictions_total)", "legendFormat": "{{predicted_class}}"}],
+      "fieldConfig": {"defaults": {"custom": {"drawStyle": "bars", "fillOpacity": 60}}, "overrides": []}
+    },
+    {
+      "id": 8, "type": "timeseries", "title": "Errors by Type",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 13},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [{"refId": "A", "expr": "sum by (error_type) (ml_prediction_errors_total)", "legendFormat": "{{error_type}}"}],
+      "fieldConfig": {"defaults": {"custom": {"drawStyle": "line", "fillOpacity": 20}, "color": {"mode": "fixed", "fixedColor": "red"}}, "overrides": []}
+    }
+  ]
+}

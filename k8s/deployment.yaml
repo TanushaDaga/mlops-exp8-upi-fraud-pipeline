@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upi-fraud-app
+  labels:
+    app: upi-fraud-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: upi-fraud-app
+  template:
+    metadata:
+      labels:
+        app: upi-fraud-app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: upi-fraud-app
+          image: upi-fraud-app:latest
+          imagePullPolicy: Never          # image is loaded straight into Minikube
+          ports:
+            - name: http-ui
+              containerPort: 8501
+            - name: http-metrics
+              containerPort: 8000
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: 8501
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: 8501
+            initialDelaySeconds: 30
+            periodSeconds: 20

@@ -1,0 +1,67 @@
+{
+  "best_model": "CatBoost",
+  "training_method": "Class Weights",
+  "optimal_threshold": 0.5099068397089672,
+  "metrics": {
+    "Accuracy": 0.8946428571428572,
+    "Precision": 0.6407766990291263,
+    "Recall": 0.75,
+    "F1-Fraud": 0.6910994764397905,
+    "F1-Macro": 0.8137951634082699,
+    "ROC-AUC": 0.9220435285053931,
+    "PR-AUC": 0.7246619910311837
+  },
+  "feature_count": 79,
+  "ui_options": {
+    "User_City": [
+      "Ahmedabad",
+      "Bengaluru",
+      "Bhopal",
+      "Chandigarh",
+      "Chennai",
+      "Delhi",
+      "Hyderabad",
+      "Indore",
+      "Jaipur",
+      "Kolkata",
+      "Lucknow",
+      "Mumbai",
+      "Nagpur",
+      "Pune",
+      "Surat"
+    ],
+    "Transaction_Type": [
+      "Bill Payment",
+      "EMI",
+      "Merchant",
+      "P2P",
+      "Recharge"
+    ],
+    "Merchant_Category": [
+      "E-Commerce",
+      "Education",
+      "Entertainment",
+      "Food & Dining",
+      "Grocery",
+      "Healthcare",
+      "Insurance",
+      "Other",
+      "Travel",
+      "Utilities"
+    ],
+    "Device_Type": [
+      "Android",
+      "Feature Phone",
+      "Web Browser",
+      "iOS"
+    ],
+    "App_Version": [
+      "v4.8.5",
+      "v4.9.2",
+      "v5.0.1",
+      "v5.1.0",
+      "v5.2.1",
+      "v5.3.0"
+    ]
+  }
+}

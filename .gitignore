@@ -14,3 +14,4 @@ data/processed/
 grafana-data/
 *.log
 catboost_info/
+docs/screenshots/
